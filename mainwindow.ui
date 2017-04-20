@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>easycomTOhamlib</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -37,6 +37,12 @@
               <string>Azimuth</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>1</number>
+              </property>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_8">
                 <item>
@@ -318,7 +324,44 @@
                </layout>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0">
+               <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0,0">
+                <item>
+                 <widget class="QPushButton" name="pushbutton_AZ2CMD">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="baseSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string notr="true">˄</string>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>15</height>
+                   </size>
+                  </property>
+                  <property name="default">
+                   <bool>false</bool>
+                  </property>
+                  <property name="flat">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
                 <item>
                  <widget class="QLabel" name="label_6">
                   <property name="text">
@@ -359,6 +402,15 @@
               <string>Elevation</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>11</number>
+              </property>
+              <property name="bottomMargin">
+               <number>1</number>
+              </property>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_10">
                 <item>
@@ -583,6 +635,43 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_6">
                 <item>
+                 <widget class="QPushButton" name="pushbutton_EL2CMD">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="baseSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string notr="true">˄</string>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>15</height>
+                   </size>
+                  </property>
+                  <property name="default">
+                   <bool>false</bool>
+                  </property>
+                  <property name="flat">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLabel" name="label_10">
                   <property name="text">
                    <string>Read:</string>
@@ -634,7 +723,7 @@
              <string notr="true">background:RED</string>
             </property>
             <property name="text">
-             <string>STOP</string>
+             <string>EMERGENCY STOP</string>
             </property>
            </widget>
           </item>

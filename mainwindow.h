@@ -8,6 +8,8 @@
 //#include <QNetworkSession>
 #include <QDialog>
 #include <QMessageBox>
+#include <QSerialPort>
+#include <QSerialPortInfo>
 
 namespace Ui {
 class MainWindow;
@@ -51,6 +53,12 @@ public slots:
    void toggleTCPConnection();
    void sendOnce();
    void ESTOP();
+   void toggleActiveTracking();
+   void toggleSerialConnection();
+   void parseSerialIncoming();
+
+   void EL2CMD();
+   void AZ2CMD();
 
 private:
    Ui::MainWindow *ui;
@@ -59,9 +67,15 @@ private:
    float CommandedRotorEl;
    float CommandedRotorAz;
    QTcpSocket *tcpSocket;
+   QSerialPort *serialPort;
+
    //QDataStream inDataStream;
    QString TCPDataIn;
    bool networkConnected;
+   bool serialConnected;
+   bool ActiveTrack;
+   void sendRotorPosition();
+
    //QNetworkSession *networkSession;
 };
 
