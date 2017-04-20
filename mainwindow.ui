@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>953</width>
-    <height>328</height>
+    <width>899</width>
+    <height>347</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>easycomTOhamlib</string>
+   <string notr="true">easycomTOhamlib - KE7PHI aka Nebarnix</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../stupidicon.png</normaloff>../../stupidicon.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_7">

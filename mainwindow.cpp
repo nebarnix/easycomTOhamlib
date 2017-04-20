@@ -44,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent) :
    tcpSocket = new QTcpSocket(this);
    serialPort = new QSerialPort(this);
    networkConnected  = false;
+   ui->AzReadLabel->setEnabled(false);
+   ui->ElReadLabel->setEnabled(false);
    serialConnected  = false;
    //inDataStream.setDevice(tcpSocket);
    //inDataStream.setVersion(QDataStream::Qt_4_0);
@@ -306,11 +308,13 @@ void MainWindow::toggleActiveTracking()
       {
       ActiveTrack = false;
       ui->pushButton_GO->setText("Go");
+      statusBar()->showMessage(tr("Tracking STOPPED"));
       }
    else if(networkConnected == true) //else enable but only if we have network
       {
       ActiveTrack = true;
       ui->pushButton_GO->setText("Stop");
+      statusBar()->showMessage(tr("Serial tracking enabled"));
       }
 
    }
@@ -328,6 +332,8 @@ void MainWindow::toggleTCPConnection()
       tcpSocket->abort();
       ui->pushButton_Network->setText("Connect Network");
       networkConnected  = false;
+      ui->AzReadLabel->setEnabled(false);
+      ui->ElReadLabel->setEnabled(false);
       ActiveTrack=false;
       }
    else
@@ -344,7 +350,11 @@ void MainWindow::TCPconnected()
    {
    //tcpSocket->write("p\r\np\r\n");
    networkConnected  = true;
+   ui->AzReadLabel->setEnabled(true);
+   ui->ElReadLabel->setEnabled(true);
+
    ui->pushButton_Network->setText("Disconnect Network");
+   statusBar()->showMessage(tr("Connected to remote rotor"));
    }
 
 void MainWindow::TCPdisconnected()
@@ -352,7 +362,10 @@ void MainWindow::TCPdisconnected()
    //tcpSocket->write("p\r\np\r\n");
    ActiveTrack=false;
    networkConnected  = false;
+   ui->AzReadLabel->setEnabled(false);
+   ui->ElReadLabel->setEnabled(false);
    ui->pushButton_Network->setText("Connect Network");
+   statusBar()->showMessage(tr("Disconnected from remote rotor"));
    }
 
 void MainWindow::displayError(QAbstractSocket::SocketError socketError)
@@ -361,25 +374,28 @@ void MainWindow::displayError(QAbstractSocket::SocketError socketError)
    case QAbstractSocket::RemoteHostClosedError:
       break;
    case QAbstractSocket::HostNotFoundError:
-      QMessageBox::information(this, tr("Fortune Client"),
+      QMessageBox::information(this, tr("easycomTOhamlib"),
                                tr("The host was not found. Please check the "
                                   "host name and port settings."));
       break;
    case QAbstractSocket::ConnectionRefusedError:
-      QMessageBox::information(this, tr("Fortune Client"),
+      QMessageBox::information(this, tr("easycomTOhamlib"),
                                tr("The connection was refused by the peer. "
                                   "Make sure the fortune server is running, "
                                   "and check that the host name and port "
                                   "settings are correct."));
       break;
    default:
-      QMessageBox::information(this, tr("Fortune Client"),
+      QMessageBox::information(this, tr("easycomTOhamlib"),
                                tr("The following error occurred: %1.")
                                .arg(tcpSocket->errorString()));
       }
 
    ui->pushButton_Network->setText("Connect Network");
+   statusBar()->showMessage(tr("Error connecting to remote rotor"));
    networkConnected  = false;
+   ui->AzReadLabel->setEnabled(false);
+   ui->ElReadLabel->setEnabled(false);
    ActiveTrack=false;
    }
 
@@ -390,6 +406,7 @@ void MainWindow::ESTOP()
       {
       tcpSocket->write("S\n");
       }
+   statusBar()->showMessage(tr("Rotor STOPPED!!!"));
    }
 
 void MainWindow::sendOnce()
@@ -402,7 +419,10 @@ void MainWindow::sendOnce()
       tcpSocket->write(" ");
       tcpSocket->write(QString::number(CommandedRotorEl).toLocal8Bit());
       tcpSocket->write("\n");
+      statusBar()->showMessage(tr("Coordinates sent to rotor"));
       }
+   else
+      statusBar()->showMessage(tr("Rotor not connected"));
    }
 
 void MainWindow::toggleSerialConnection()
@@ -424,6 +444,30 @@ void MainWindow::toggleSerialConnection()
          {
          serialConnected = true;
          ui->pushButton_Serial->setText("Disconnect Serial");
+         statusBar()->showMessage(tr("Connected to serial port"));
+
+         ui->AzContD_down->setEnabled(false);
+         ui->AzContO_down->setEnabled(false);
+         ui->AzContT_down->setEnabled(false);
+         ui->AzContH_down->setEnabled(false);
+
+         ui->AzContD_up->setEnabled(false);
+         ui->AzContO_up->setEnabled(false);
+         ui->AzContT_up->setEnabled(false);
+         ui->AzContH_up->setEnabled(false);
+
+         ui->ElContD_down->setEnabled(false);
+         ui->ElContO_down->setEnabled(false);
+         ui->ElContT_down->setEnabled(false);
+         ui->ElContH_down->setEnabled(false);
+
+         ui->ElContD_up->setEnabled(false);
+         ui->ElContO_up->setEnabled(false);
+         ui->ElContT_up->setEnabled(false);
+         ui->ElContH_up->setEnabled(false);
+
+         ui->pushbutton_AZ2CMD->setEnabled(false);
+         ui->pushbutton_EL2CMD->setEnabled(false);
          }
       }
    else
@@ -431,6 +475,30 @@ void MainWindow::toggleSerialConnection()
       serialPort->close();
       serialConnected = false;
       ui->pushButton_Serial->setText("Connect Serial");
+      statusBar()->showMessage(tr("Disconnected from serial port"));
+
+      ui->AzContD_down->setEnabled(true);
+      ui->AzContO_down->setEnabled(true);
+      ui->AzContT_down->setEnabled(true);
+      ui->AzContH_down->setEnabled(true);
+
+      ui->AzContD_up->setEnabled(true);
+      ui->AzContO_up->setEnabled(true);
+      ui->AzContT_up->setEnabled(true);
+      ui->AzContH_up->setEnabled(true);
+
+      ui->ElContD_down->setEnabled(true);
+      ui->ElContO_down->setEnabled(true);
+      ui->ElContT_down->setEnabled(true);
+      ui->ElContH_down->setEnabled(true);
+
+      ui->ElContD_up->setEnabled(true);
+      ui->ElContO_up->setEnabled(true);
+      ui->ElContT_up->setEnabled(true);
+      ui->ElContH_up->setEnabled(true);
+
+      ui->pushbutton_AZ2CMD->setEnabled(true);
+      ui->pushbutton_EL2CMD->setEnabled(true);
       }
    }
 
@@ -444,7 +512,7 @@ void MainWindow::parseSerialIncoming()
    while(serialPort->canReadLine())
       {
       QString SerLineIn = QString(serialPort->readLine());
-      qDebug() << SerLineIn;
+      //qDebug() << SerLineIn;
       QRegularExpressionMatch match(RegAz.match(SerLineIn));
       if (match.hasMatch())
          {
@@ -480,7 +548,7 @@ void MainWindow::parseTCPIncoming()
           else if(RegEl.indexIn(data) >= 0)
             ui->ElReadLabel->setText(data.remove(QRegExp("[\\n\\t\\r]")));
             */
-      qDebug() << TCPLineIn;
+      //qDebug() << TCPLineIn;
       match = new QRegularExpressionMatch(RegAz.match(TCPLineIn));
       if (match->hasMatch())
          {
