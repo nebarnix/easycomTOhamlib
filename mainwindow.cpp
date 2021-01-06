@@ -67,6 +67,11 @@ MainWindow::MainWindow(QWidget *parent) :
    connect(ui->pushbutton_AZ2CMD, SIGNAL(clicked()), this, SLOT(AZ2CMD()));
    connect(ui->pushbutton_EL2CMD, SIGNAL(clicked()), this, SLOT(EL2CMD()));
 
+   //Init the polar plot
+   //delete(ui->skyPlot); //get rid of the existing plot
+   skyPlotObj = new Plot(ui->groupBox1);
+   skyPlotObj->setObjectName(QStringLiteral("skyPlot"));
+   ui->verticalLayout_2->addWidget(skyPlotObj);
 
    }
 
@@ -285,6 +290,17 @@ void MainWindow::runTimer() //timer expired!
    {
    sendRotorPosition();
    requestRotorPosition();
+
+   //update the polar plot markers
+   if(skyPlotObj)
+      {
+      //skyPlotObj->markerDDE->setPosition(QwtPointPolar( DDETargetAz, DDETargetEl ) );
+      skyPlotObj->markerDDE->setVisible(false);
+      skyPlotObj->markerCMD->setPosition(QwtPointPolar( CommandedRotorAz, CommandedRotorEl ) );
+      skyPlotObj->markerACT->setPosition(QwtPointPolar( CurrentRotorAz, CurrentRotorEl ) );
+      //skyPlotObj->markerACT->setPosition(QwtPointPolar( CommandedRotorAz, CommandedRotorEl ) );
+      skyPlotObj->replot();
+      }
    }
 
 void MainWindow::sendRotorPosition()
@@ -308,13 +324,13 @@ void MainWindow::toggleActiveTracking()
       {
       ActiveTrack = false;
       ui->pushButton_GO->setText("Go");
-      statusBar()->showMessage(tr("Tracking STOPPED"));
+      statusBar()->showMessage(tr("Tracking STOPPED"),10000);
       }
    else if(networkConnected == true) //else enable but only if we have network
       {
       ActiveTrack = true;
       ui->pushButton_GO->setText("Stop");
-      statusBar()->showMessage(tr("Serial tracking enabled"));
+      statusBar()->showMessage(tr("Serial tracking enabled"),10000);
       }
 
    }
@@ -354,7 +370,7 @@ void MainWindow::TCPconnected()
    ui->ElReadLabel->setEnabled(true);
 
    ui->pushButton_Network->setText("Disconnect Network");
-   statusBar()->showMessage(tr("Connected to remote rotor"));
+   statusBar()->showMessage(tr("Connected to remote rotor"),10000);
    }
 
 void MainWindow::TCPdisconnected()
@@ -365,7 +381,7 @@ void MainWindow::TCPdisconnected()
    ui->AzReadLabel->setEnabled(false);
    ui->ElReadLabel->setEnabled(false);
    ui->pushButton_Network->setText("Connect Network");
-   statusBar()->showMessage(tr("Disconnected from remote rotor"));
+   statusBar()->showMessage(tr("Disconnected from remote rotor"),10000);
    }
 
 void MainWindow::displayError(QAbstractSocket::SocketError socketError)
@@ -392,7 +408,7 @@ void MainWindow::displayError(QAbstractSocket::SocketError socketError)
       }
 
    ui->pushButton_Network->setText("Connect Network");
-   statusBar()->showMessage(tr("Error connecting to remote rotor"));
+   statusBar()->showMessage(tr("Error connecting to remote rotor"),10000);
    networkConnected  = false;
    ui->AzReadLabel->setEnabled(false);
    ui->ElReadLabel->setEnabled(false);
@@ -406,7 +422,9 @@ void MainWindow::ESTOP()
       {
       tcpSocket->write("S\n");
       }
-   statusBar()->showMessage(tr("Rotor STOPPED!!!"));
+   statusBar()->showMessage(tr("Rotor STOPPED!!!"),10000);
+   ui->pushButton_GO->setText("Go");
+
    }
 
 void MainWindow::sendOnce()
@@ -419,10 +437,10 @@ void MainWindow::sendOnce()
       tcpSocket->write(" ");
       tcpSocket->write(QString::number(CommandedRotorEl).toLocal8Bit());
       tcpSocket->write("\n");
-      statusBar()->showMessage(tr("Coordinates sent to rotor"));
+      statusBar()->showMessage(tr("Coordinates sent to rotor"),10000);
       }
    else
-      statusBar()->showMessage(tr("Rotor not connected"));
+      statusBar()->showMessage(tr("Rotor not connected"),10000);
    }
 
 void MainWindow::toggleSerialConnection()
@@ -444,7 +462,7 @@ void MainWindow::toggleSerialConnection()
          {
          serialConnected = true;
          ui->pushButton_Serial->setText("Disconnect Serial");
-         statusBar()->showMessage(tr("Connected to serial port"));
+         statusBar()->showMessage(tr("Connected to serial port"),10000);
 
          ui->AzContD_down->setEnabled(false);
          ui->AzContO_down->setEnabled(false);
@@ -475,7 +493,7 @@ void MainWindow::toggleSerialConnection()
       serialPort->close();
       serialConnected = false;
       ui->pushButton_Serial->setText("Connect Serial");
-      statusBar()->showMessage(tr("Disconnected from serial port"));
+      statusBar()->showMessage(tr("Disconnected from serial port"),10000);
 
       ui->AzContD_down->setEnabled(true);
       ui->AzContO_down->setEnabled(true);
@@ -505,9 +523,10 @@ void MainWindow::toggleSerialConnection()
 void MainWindow::parseSerialIncoming()
    {
    //examples from easycomm
-//AZ236 EL0
-   //AZ235.3 EL0
-   QRegularExpression RegAz("^AZ(-?\\d+\\.?\\d*) EL(-?\\d+\\.?\\d*)\\W*");
+   //AZ236 EL0
+      //AZ235.3 EL0
+      QRegularExpression RegAz("^AZ(-?\\d+\\.?\\d*) EL(-?\\d+\\.?\\d*)\\W*");
+
 
    while(serialPort->canReadLine())
       {

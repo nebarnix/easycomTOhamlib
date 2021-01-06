@@ -383,9 +383,6 @@
                </layout>
               </item>
              </layout>
-             <zorder>gridLayoutWidget_4</zorder>
-             <zorder>verticalLayoutWidget_4</zorder>
-             <zorder>horizontalLayoutWidget_4</zorder>
             </widget>
            </item>
           </layout>
@@ -851,6 +848,7 @@
         <height>300</height>
        </size>
       </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2"/>
      </widget>
     </item>
    </layout>

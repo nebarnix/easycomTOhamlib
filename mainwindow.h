@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include "plot.h"
 
 namespace Ui {
 class MainWindow;
@@ -69,14 +70,13 @@ private:
    QTcpSocket *tcpSocket;
    QSerialPort *serialPort;
 
-   //QDataStream inDataStream;
    QString TCPDataIn;
    bool networkConnected;
    bool serialConnected;
    bool ActiveTrack;
    void sendRotorPosition();
 
-   //QNetworkSession *networkSession;
+   Plot *skyPlotObj; //make this a pointer so we can control when the constructor gets run
 };
 
 #endif // MAINWINDOW_H
